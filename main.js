@@ -1,10 +1,8 @@
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 require('./config')
 const {
   useSingleFileAuthState,
   DisconnectReason
 } = require('@adiwajshing/baileys')
-const { generate } = require('qrcode-terminal')
 const WebSocket = require('ws')
 const path = require('path')
 const fs = require('fs')
@@ -24,7 +22,6 @@ try {
 const { Low, JSONFile } = low
 const mongoDB = require('./lib/mongoDB')
 
-simple.protoType()
 
 global.API = (name, path = '/', query = {}, apikeyqueryname) => (name in global.APIs ? global.APIs[name] : name) + path + (query || apikeyqueryname ? '?' + new URLSearchParams(Object.entries({ ...query, ...(apikeyqueryname ? { [apikeyqueryname]: global.APIKeys[name in global.APIs ? global.APIs[name] : name] } : {}) })) : '')
 // global.Fn = function functionCallBack(fn, ...args) { return fn.call(global.conn, ...args) }
@@ -57,7 +54,6 @@ global.loadDatabase = async function loadDatabase() {
     stats: {},
     msgs: {},
     sticker: {},
-    settings: {},
     ...(global.db.data || {})
   }
   global.db.chain = _.chain(global.db.data)
@@ -74,7 +70,7 @@ const { state, saveState } = useSingleFileAuthState(global.authFile)
 const connectionOptions = {
   printQRInTerminal: true,
   auth: state,
-  logger: P({ level: 'silent'}),
+  logger: P({ level: 'debug' }),
   version: [2, 2204, 13]
 }
 
@@ -86,18 +82,15 @@ if (!opts['test']) {
     if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [os.tmpdir(), 'tmp'], tmp.forEach(filename => cp.spawn('find', [filename, '-amin', '3', '-type', 'f', '-delete'])))
   }, 30 * 1000)
 }
-if (opts['big-qr'] || opts['server']) conn.ev.on('qr', qr => generate(qr, { small: false }))
-if (opts['server']) require('./server')(global.conn, PORT)
 
 async function connectionUpdate(update) {
-  console.log(require('chalk').redBright('Mengaktifkan Bot, Harap tunggu sebentar...'))
   const { connection, lastDisconnect } = update
   global.timestamp.connect = new Date
   if (lastDisconnect && lastDisconnect.error && lastDisconnect.error.output && lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut && conn.ws.readyState !== WebSocket.CONNECTING) {
     console.log(global.reloadHandler(true))
   }
   if (global.db.data == null) await loadDatabase()
-//console.log(JSON.stringify(update, null, 4))
+  console.log(JSON.stringify(update, null, 4))
 }
 
 
