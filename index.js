@@ -1,4 +1,4 @@
-console.log('Starting...')
+console.log('📡 Starting...')
 let cluster = require('cluster')
 let path = require('path')
 let fs = require('fs')
@@ -7,16 +7,15 @@ const CFonts = require('cfonts')
 const Readline = require('readline')
 const yargs = require('yargs/yargs')
 const rl = Readline.createInterface(process.stdin, process.stdout)
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
-CFonts.say('Bot-Md', {
-  colors: ['#f2aa4c'],
-  font: 'block',
+CFonts.say('ASEP-MD\n 𝙗𝙮.𝙧𝙞𝙙𝙝𝙤', {
+  colors: ['blueBright','yellowBright'],                                        font: 'block',
   align: 'center',
 })
-CFonts.say(`${package.name} Di Buat Oleh @${package.author.name || package.author}`, {
-  colors: ['#f2aa4c'],
-  font: 'console',
-  align: 'center',
+CFonts.say(`𝙎𝘼𝙇𝘼𝙈 𝘼𝙎𝙀𝙋 𝘽𝙊𝙏𝙕`, {                                            
+colors: ['yellow'],                                                           
+font: 'console',                                                              align: 'center',
 })
 
 var isRunning = false

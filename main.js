@@ -29,7 +29,7 @@ global.timestamp = {
   start: new Date
 }
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 3000
 
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 // console.log({ opts })
@@ -119,47 +119,23 @@ global.reloadHandler = function (restatConn) {
   if (!isInit) {
     conn.ev.off('messages.upsert', conn.handler)
     conn.ev.off('group-participants.update', conn.participantsUpdate)
-    conn.ev.off('groups.update', conn.groupsUpdate)
     conn.ev.off('message.delete', conn.onDelete)
     conn.ev.off('connection.update', conn.connectionUpdate)
     conn.ev.off('creds.update', conn.credsUpdate)
   }
 
-  conn.welcome = `*Hai @user ! 👋*
-         ‷✧ Selamat Datang di Grup
-           *@subject*
-           
-╭◪ *Intro Member Baru* ◪─
-│ ✧ *Nama:*
-│ ✧ *Umur:*
-│ ✧ *Status:*
-│ ✧ *Askot:*
-╰◪
-  
-              *◌  ⃝✧⪼ Deskripsi Group ミ*
-  @desc`
-  conn.bye = 'Selamat tinggal @user!'
-  conn.spromote = '@user sekarang admin!'
-  conn.sdemote = '@user sekarang bukan admin!'
-  conn.sDesc = 'Deskripsi telah diubah ke \n@desc'
-  conn.sSubject = 'Judul grup telah diubah ke \n@subject'
-  conn.sIcon = 'Icon grup telah diubah!'
-  conn.sRevoke = 'Link group telah diubah ke \n@revoke'
-  conn.sAnnounceOn = 'Group telah di tutup!\nsekarang hanya admin yang dapat mengirim pesan.'
-  conn.sAnnounceOff = 'Group telah di buka!\nsekarang semua peserta dapat mengirim pesan.'
-  conn.sRestrictOn = 'Edit Info Grup di ubah ke hanya admin!'
-  conn.sRestrictOff = 'Edit Info Grup di ubah ke semua peserta!'
-
+  conn.welcome = '*Welcome @user di @subject*'
+  conn.bye = '*Nice, @user keluar beban berkurang....*'
+  conn.spromote = '╭──֍ 〔 ıll 𝗔𝗗𝗠𝗜𝗡 𝗚𝗥𝗢𝗨𝗣 llı 〕 ֍───\n│╭───────────\n││─⬣ Name : @user\n││─⬣ Desc : Jagain groupnya\n│╰───────────\n╰─────────────────────\n\n📮 Hello | Titip Group nya😉'
+  conn.sdemote = '╭──֍ 〔 ıll 𝗨𝗡𝗔𝗗𝗠𝗜𝗡 𝗚𝗥𝗢𝗨𝗣 llı 〕 ֍───\n│╭───────────\n││─⬣ Name : @user\n││─⬣ Desc : Nah kan kurang kerjasama\n│╰───────────\n╰─────────────────────\n\n📮 Hello | Kasian deh😉'
   conn.handler = handler.handler.bind(conn)
   conn.participantsUpdate = handler.participantsUpdate.bind(conn)
-  conn.groupsUpdate = handler.groupsUpdate.bind(conn)
   conn.onDelete = handler.delete.bind(conn)
   conn.connectionUpdate = connectionUpdate.bind(conn)
   conn.credsUpdate = saveState.bind(conn)
 
   conn.ev.on('messages.upsert', conn.handler)
   conn.ev.on('group-participants.update', conn.participantsUpdate)
-  conn.ev.on('groups.update', conn.groupsUpdate)
   conn.ev.on('message.delete', conn.onDelete)
   conn.ev.on('connection.update', conn.connectionUpdate)
   conn.ev.on('creds.update', conn.credsUpdate)
@@ -184,7 +160,7 @@ global.reload = (_ev, filename) => {
     let dir = path.join(pluginFolder, filename)
     if (dir in require.cache) {
       delete require.cache[dir]
-      if (fs.existsSync(dir)) conn.logger.info(`re require plugin '${filename}'`)
+      if (fs.existsSync(dir)) conn.logger.info(`re - require plugin '${filename}'`)
       else {
         conn.logger.warn(`deleted plugin '${filename}'`)
         return delete global.plugins[filename]
@@ -238,7 +214,7 @@ async function _quickTest() {
     gm,
     find
   }
-  require('./lib/sticker').support = s
+  // require('./lib/sticker').support = s
   Object.freeze(global.support)
 
   if (!s.ffmpeg) conn.logger.warn('Please install ffmpeg for sending videos (pkg install ffmpeg)')
@@ -249,4 +225,3 @@ async function _quickTest() {
 _quickTest()
   .then(() => conn.logger.info('Quick Test Done'))
   .catch(console.error)
-  
